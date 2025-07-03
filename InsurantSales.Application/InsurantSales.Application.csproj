@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+    <PackageReference Include="Mindee" Version="3.28.0" />
+    <PackageReference Include="OpenAI" Version="2.1.0" />
+    <PackageReference Include="Telegram.Bot" Version="22.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InsurantSales.DataAccess\InsurantSales.DataAccess.csproj" />
+    <ProjectReference Include="..\InsurantSales.Domain\InsurantSales.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

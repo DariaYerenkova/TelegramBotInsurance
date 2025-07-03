@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InsurantSalesTelegramBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
