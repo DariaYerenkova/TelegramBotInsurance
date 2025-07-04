@@ -46,3 +46,35 @@ Built using .net 8, CQRS with MediatR, TelegramBot API, OpenAI API, Mindee API f
 5. Any other message: 
    → Passed to OpenAI for a smart reply.
 
+6. Deployment process:
+1. Create .env file from template:
+      cp COPY.env .env
+   
+
+2. Fill in the required environment variables in .env file:
+   # Database Configuration
+   DATABASE_SERVER=sql1
+   DATABASE_PORT=1433
+   DATABASE_NAME=InsurantSalesDB
+   DATABASE_USER=sa
+   MSSQL_SA_PASSWORD=YourStrongP@ssw0rd123
+
+   # API Keys
+   TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+   OPENAI_API_KEY=your_openai_api_key_here
+   MINDEE_API_KEY=your_mindee_api_key_here
+   
+
+3. Build the main application image:
+   docker build -t telegram-bot:latest -f Dockerfile .
+
+   Build the migrations image:
+   docker build -t telegram-bot-migration:latest -f Dockerfile.migrations .
+
+4. Start all services:
+   docker-compose up -d
+
+This will:
+1. Start SQL Server container
+2. Run database migrations
+3. Start the Telegram bot application

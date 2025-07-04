@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  sql1:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql1
+    hostname: sql1
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    restart: unless-stopped
+    networks:
+      - insurant-network
+
+      
+  telegram-bot:
+    image: 781599147529.dkr.ecr.eu-central-1.amazonaws.com/telegram-bot-insurance:latest
+    container_name: telegram-bot
+    depends_on:
+      - sql1
+      - telegram-bot-migrations
+    environment:
+      - ConnectionStrings__DatabaseConnectionString=Server=${DATABASE_SERVER},${DATABASE_PORT};Database=${DATABASE_NAME};User Id=${DATABASE_USER};Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+      - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
+      - OpenAI__ApiKey=${OPENAI_API_KEY}
+      - Mindee__ApiKey=${MINDEE_API_KEY}
+    restart: unless-stopped
+    volumes:
+      - ./TestData/TestMindeeResponse.json:/app/TestData/TestMindeeResponse.json
+    networks:
+      - insurant-network
+
+    
+  telegram-bot-migrations:
+    image: 781599147529.dkr.ecr.eu-central-1.amazonaws.com/telegram-bot-insurance-migration:latest
+    container_name: telegram-bot-migration
+    depends_on:
+      - sql1      
+    environment:
+      - ConnectionStrings__DatabaseConnectionString=Server=${DATABASE_SERVER},${DATABASE_PORT};Database=${DATABASE_NAME};User Id=${DATABASE_USER};Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - insurant-network
+    
+
+networks:
+  insurant-network:
+    driver: bridge
