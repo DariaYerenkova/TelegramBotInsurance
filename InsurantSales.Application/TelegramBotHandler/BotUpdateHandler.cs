@@ -87,7 +87,7 @@ namespace InsurantSales.Application.TelegramBotHandler
                 }
                 else if (!string.IsNullOrEmpty(update.Message.Text))
                 {
-                    if (user.Step == DocumentStep.WaitingForCarDocument && update.Message.Text == "Yes")
+                    if (user.Step == DocumentStep.WaitingForCarDocument)
                     {
                         switch(update.Message.Text)
                         {
@@ -102,7 +102,7 @@ namespace InsurantSales.Application.TelegramBotHandler
                         }
                         
                     }
-                    else if (user.Step == DocumentStep.WaitingForPassport && update.Message.Text == "Yes")
+                    else if (user.Step == DocumentStep.WaitingForPassport )
                     {
                         switch (update.Message.Text)
                         {
