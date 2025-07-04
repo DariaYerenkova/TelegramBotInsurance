@@ -56,6 +56,10 @@ namespace InsurantSales.Application.TelegramBotHandler
 
                         await _mediator.Send(new CreateUserCommand(newUser), cancellationToken);
                     }
+                    else
+                    {
+                        await _mediator.Send(new UpdateUserCommand(DocumentStep.WaitingForCarDocument, update.Message.From.Id));
+                    }
 
                     reply = await _mediator.Send(new ProcessStartQuery(), cancellationToken);
                     await _botClient.SendMessage(chatId, reply, cancellationToken: cancellationToken);
@@ -85,15 +89,32 @@ namespace InsurantSales.Application.TelegramBotHandler
                 {
                     if (user.Step == DocumentStep.WaitingForCarDocument && update.Message.Text == "Yes")
                     {
-                        await _mediator.Send(new UpdateUserCommand(DocumentStep.WaitingForPassport, update.Message.From.Id));
-                        //verify what is stored in cache and save extracted fields to db
-                        await _botClient.SendMessage(chatId, "Car Document is valid! Now upload Passport.", cancellationToken: cancellationToken);
+                        switch(update.Message.Text)
+                        {
+                            case "Yes":
+                                await _mediator.Send(new UpdateUserCommand(DocumentStep.WaitingForPassport, update.Message.From.Id));
+                                //verify what is stored in cache and save extracted fields to db
+                                await _botClient.SendMessage(chatId, "Car Document is valid! Now upload Passport.", cancellationToken: cancellationToken);
+                                break;
+                            case "No":
+                                await _botClient.SendMessage(chatId, "Car Document is invalid! Reupload it.", cancellationToken: cancellationToken);
+                                break;
+                        }
+                        
                     }
                     else if (user.Step == DocumentStep.WaitingForPassport && update.Message.Text == "Yes")
                     {
-                        await _mediator.Send(new UpdateUserCommand(DocumentStep.Completed, update.Message.From.Id));
-                        //verify what is stored in cache and save extracted fields to db
-                        await _botClient.SendMessage(chatId, "Passport is valid! Please wait for car insurance proposal.", cancellationToken: cancellationToken);
+                        switch (update.Message.Text)
+                        {
+                            case "Yes":
+                                await _mediator.Send(new UpdateUserCommand(DocumentStep.Completed, update.Message.From.Id));
+                                //verify what is stored in cache and save extracted fields to db
+                                await _botClient.SendMessage(chatId, "Passport is valid! Please wait for car insurance proposal.", cancellationToken: cancellationToken);
+                                break;
+                            case "No":
+                                await _botClient.SendMessage(chatId, "Passport is invalid! Reupload it.", cancellationToken: cancellationToken);
+                                break;
+                        }                        
                     }
                     else
                     {
@@ -109,7 +130,7 @@ namespace InsurantSales.Application.TelegramBotHandler
             }
             catch (Exception ex)
             {
-                await _botClient.SendMessage(chatId, "An error occurred while processing your request.", cancellationToken: cancellationToken);
+                await _botClient.SendMessage(chatId, "An error occurred while processing your request (Most likely OpenAI).", cancellationToken: cancellationToken);
             }
 
         }
