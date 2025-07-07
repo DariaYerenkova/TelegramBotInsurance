@@ -46,7 +46,7 @@ Built using .net 8, CQRS with MediatR, TelegramBot API, OpenAI API, Mindee API f
 5. Any other message: 
    → Passed to OpenAI for a smart reply.
 
-6. Deployment process:
+6. # Deployment process:
 1. Create .env file from template:
       cp COPY.env .env
    
